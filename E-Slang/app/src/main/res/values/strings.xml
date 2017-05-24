@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">E-Slang</string>
+    <string name="title_activity_dictionary">Dictionary</string>
+    <string name="title_activity_add_word">AddWord</string>
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.willi.e_slang.MainActivity"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <Button
+        android:id="@+id/addword"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        android:layout_marginLeft="125dp"
+        android:layout_marginTop="345dp"
+        android:onClick="clickAddWord"
+        android:text="Add Word"
+        app:layout_constraintLeft_toLeftOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <ImageButton
+        android:id="@+id/countrya"
+        android:layout_width="75dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="20dp"
+        android:onClick="clickDictionary"
+        android:text="Country A"
+        app:layout_constraintLeft_toLeftOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:background="@drawable/kflag"
+        />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="344dp"
+        android:layout_height="23dp"
+        android:gravity="center"
+        android:text="To start, please select a country."
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="344dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="Welcome to E-Slang!"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="8dp" />
+
+</android.support.constraint.ConstraintLayout>
