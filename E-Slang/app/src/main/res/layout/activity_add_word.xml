@@ -1,64 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.willi.e_slang.AddWord">
+    android:layout_height="fill_parent" >
 
-    <EditText
-        android:id="@+id/shortDef"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Short Def"
-        android:layout_marginTop="14dp"
-        app:layout_constraintTop_toBottomOf="@+id/wordName"
-        android:layout_marginLeft="-6dp"
-        app:layout_constraintLeft_toLeftOf="@+id/wordName" />
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.willi.e_slang.AddWord">
 
-    <EditText
-        android:id="@+id/wordName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="39dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Word_Name"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="219dp"
+            android:layout_height="47dp"
+            android:text="Add Word"
+            app:layout_constraintLeft_toRightOf="@+id/button5"
+            android:layout_marginLeft="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="219dp"
-        android:layout_height="47dp"
-        android:text="Add Word"
-        app:layout_constraintLeft_toRightOf="@+id/button5"
-        android:layout_marginLeft="9dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="33dp" />
+        <EditText
+            android:id="@+id/wordName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:text="Word_Name"
+            android:layout_marginTop="13dp"
+            app:layout_constraintTop_toBottomOf="@+id/header"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Word"
-        android:onClick="applyText"
-        android:layout_marginTop="225dp"
-        app:layout_constraintTop_toBottomOf="@+id/shortDef"
-        android:layout_marginLeft="133dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        <EditText
+            android:id="@+id/shortTerm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="9dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:text="shortDef"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/wordName" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="33dp"
-        android:onClick="back"
-        android:text="Back"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        <EditText
+            android:id="@+id/longTerm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="9dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:text="longDef"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shortTerm" />
+
+        <EditText
+            android:id="@+id/character"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:inputType="textMultiLine"
+            android:text="characteristic"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/longTerm" />
+
+        <EditText
+            android:id="@+id/example"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="11dp"
+            android:ems="10"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:inputType="textPersonName"
+            android:text="example"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/character" />
+
+        <EditText
+            android:id="@+id/audioUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="7dp"
+            android:ems="10"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:inputType="textMultiLine"
+            android:text="audioURL"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/example" />
+
+        <EditText
+            android:id="@+id/videoUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:text="videoURL"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/audioUrl" />
+
+        <EditText
+            android:id="@+id/country"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="-60dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:text="country"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/videoUrl" />
+
+        <Button
+            android:id="@+id/addWordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Word"
+            android:onClick="applyText"
+            android:layout_marginTop="75dp"
+            app:layout_constraintTop_toBottomOf="@+id/tag"
+            android:layout_marginLeft="122dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="back"
+            android:text="Back"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:text="tags"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/country" />
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

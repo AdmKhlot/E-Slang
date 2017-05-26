@@ -3,6 +3,7 @@ package com.example.willi.e_slang;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -39,6 +40,8 @@ public final class DbManager{
     private static final String DATABASE_NAME = "data";
     private static final int DATABASE_VERSION = 2;
     public Context mCtx = null;
+
+
 
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -78,13 +81,14 @@ public final class DbManager{
     }
 
     //insert new word
-    public long insert(String word, ArrayList<String> shortTerm, ArrayList<String> longTerm, ArrayList<String> character,ArrayList<String> audioUrl,ArrayList<String> videoUrl, String country, ArrayList<String> tag) {
+    public long insert(String word, ArrayList<String> shortTerm, ArrayList<String> longTerm, ArrayList<String> character, ArrayList<String> example, ArrayList<String> audioUrl,ArrayList<String> videoUrl, String country, ArrayList<String> tag) {
         ArrayList<String> wordList = new ArrayList<String>();
         wordList = getAllWords(country);
 
         String shortT=handleDescription(shortTerm);
         String longT=handleDescription(longTerm);
         String charact=handleDescription(character);
+        String ex=handleDescription(example);
         String auUrl=handleDescription(audioUrl);
         String viUrl=handleDescription(videoUrl);
         String tags=handleDescription(tag);
@@ -99,6 +103,7 @@ public final class DbManager{
             initialValues.put(SHORT, shortT);
             initialValues.put(LONG, longT);
             initialValues.put(CHARACTERISTIC, charact);
+            initialValues.put(EX, ex);
             initialValues.put(AUURL, auUrl);
             initialValues.put(VIURL, viUrl);
             initialValues.put(COUNTRY, country);
@@ -151,6 +156,8 @@ public final class DbManager{
     }
 
     public ArrayList<String> getAllWords(String country){
+        if (country == null)
+            return null;
         ArrayList<String> wordList=new ArrayList<String>();
         Cursor mCursor = mDb.query(_TABLENAME, new String[] { INDEX, WORD, SHORT, LONG, CHARACTERISTIC,EX,AUURL,VIURL,COUNTRY,TAG }, null, null, null, null, null);
 
@@ -164,6 +171,34 @@ public final class DbManager{
         }
         mCursor.close();
         return wordList;
+    }
+
+    public Cursor getAllWords2(String country){
+        if (country == null)
+            return null;
+        ArrayList<String> wordList=new ArrayList<String>();
+        String query=new String();
+        query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "';";
+        Cursor mCursor = mDb.rawQuery(query, null);
+        //Cursor mCursor = mDb.query(_TABLENAME, new String[] { INDEX, WORD, SHORT, LONG, CHARACTERISTIC,EX,AUURL,VIURL,COUNTRY,TAG }, null, null, null, null, null);
+
+        mCursor.moveToFirst();
+
+        return mCursor;
+    }
+
+    public Cursor getOneWord(String country, String id, String word){
+        if (country == null)
+            return null;
+        ArrayList<String> wordList=new ArrayList<String>();
+        String query=new String();
+        query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "' AND word='" + word + "' AND _index='" + id + "';";
+        Cursor mCursor = mDb.rawQuery(query, null);
+        //Cursor mCursor = mDb.query(_TABLENAME, new String[] { INDEX, WORD, SHORT, LONG, CHARACTERISTIC,EX,AUURL,VIURL,COUNTRY,TAG }, null, null, null, null, null);
+
+        mCursor.moveToFirst();
+
+        return mCursor;
     }
 
     public void updateShortTerm(String word, ArrayList<String> shortTerm){

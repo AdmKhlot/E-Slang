@@ -20,17 +20,41 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <ImageButton
-        android:id="@+id/countrya"
+        android:id="@+id/korea"
         android:layout_width="75dp"
         android:layout_height="54dp"
         android:layout_marginLeft="18dp"
         android:layout_marginTop="20dp"
-        android:onClick="clickDictionary"
+        android:onClick="clickDictionaryKorea"
         android:text="Country A"
         app:layout_constraintLeft_toLeftOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         android:background="@drawable/kflag"
         />
+
+    <ImageButton
+        android:id="@+id/england"
+        android:layout_width="75dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="135dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/england"
+        android:onClick="clickDictionaryEngland"
+        android:text="Country A"
+        app:layout_constraintLeft_toLeftOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <ImageButton
+        android:id="@+id/france"
+        android:layout_width="75dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="248dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/france"
+        android:onClick="clickDictionaryFrance"
+        android:text="Country A"
+        app:layout_constraintLeft_toLeftOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView
         android:id="@+id/textView"

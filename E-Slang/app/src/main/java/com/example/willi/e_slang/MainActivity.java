@@ -19,18 +19,29 @@ public class MainActivity extends AppCompatActivity {
         dbm.open();
     }
     // go to Dictionary screen
-    public void clickDictionary(View v) {
-        Intent myIntent = new Intent(MainActivity.this, Dictionary.class);
-        myIntent.putExtra("1", "" +
-                ""); //sends key 1 (korea) to next activity (dictionary)
-        MainActivity.this.startActivity(myIntent);
+    public void clickDictionaryKorea(View v) {
+        Intent myIntent = new Intent(this, Dictionary.class);
+        myIntent.putExtra("1", "Korea"); // string you want to pass, variable to receive
+        startActivity(myIntent);
+    }
+
+    public void clickDictionaryEngland(View v) {
+        Intent myIntent = new Intent(this, Dictionary.class);
+        myIntent.putExtra("1", "England"); // string you want to pass, variable to receive
+        startActivity(myIntent);
+    }
+
+    public void clickDictionaryFrance(View v) {
+        Intent myIntent = new Intent(this, Dictionary.class);
+        myIntent.putExtra("1", "France"); // string you want to pass, variable to receive
+        startActivity(myIntent);
     }
 
     // go to AddWord screen
     public void clickAddWord(View v) {
-        Intent myIntent = new Intent(MainActivity.this, AddWord.class);
-        myIntent.putExtra("1", "Korea");
-        MainActivity.this.startActivity(myIntent);
+        Intent myIntent = new Intent(this, AddWord.class);
+        myIntent.putExtra("type", "add"); // string you want to pass, variable to receive
+        startActivity(myIntent);
     }
 
 }
