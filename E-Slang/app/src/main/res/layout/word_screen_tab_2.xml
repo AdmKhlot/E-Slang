@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="Long Definition"
+            android:textAlignment="center"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginBottom="@dimen/default_gap"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/long_def"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:scrollbars="vertical"
+            android:text="longdef"
+            android:textSize="18dp"
+            android:layout_marginBottom="@dimen/default_gap"/>
+
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:background="#c0c0c0"
+            android:layout_marginBottom="@dimen/default_gap"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="Examples"
+            android:textAlignment="center"
+            android:textSize="25dp"
+            android:layout_marginBottom="@dimen/default_gap"/>
+
+        <TextView
+            android:id="@+id/eg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:scrollbars="vertical"
+            android:text="Examples"
+            android:textSize="18dp"
+            android:layout_marginBottom="@dimen/default_gap"/>
+
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:background="#c0c0c0"
+            android:layout_marginBottom="@dimen/default_gap"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="Video"
+            android:textAlignment="center"
+            android:textSize="25dp"
+            android:layout_marginBottom="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"/>
+
+        <TextView
+            android:id="@+id/video_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:scrollbars="vertical"
+            android:text="video url"
+            android:textSize="18dp"
+            android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:id="@+id/go_to_video_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="goToVideoScreen"
+            android:text="Click here to view videos" />
+
+    </LinearLayout>
+</ScrollView>
