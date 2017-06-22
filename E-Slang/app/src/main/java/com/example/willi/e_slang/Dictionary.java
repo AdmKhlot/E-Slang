@@ -5,20 +5,23 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.MenuItem;
+
+/**
+ * Dictionary displays all the words or tags of a country and allows the user to search for them.
+ * It contains of 2 fragments (DictionaryTab1, DictionaryTab2)
+ * DictionaryTab1 shows the words
+ * DictionaryTab2 shows the tags
+ */
 
 public class Dictionary extends AppCompatActivity {
+    DbManager dbm;
+
+    //stores the inputs
+    String word;
+    String flag;
 
     private ViewPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
-
-    DbManager dbm;
-    String word;
-    String id;
-    String flag;
-    String imageFlag;
-    String flag2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,31 +40,27 @@ public class Dictionary extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        Intent intent = getIntent();
-        flag = intent.getStringExtra("flag");
-        word = intent.getStringExtra("word");
-        id = intent.getStringExtra("id");
-
-        getSupportActionBar().setTitle("Dictionary");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        //initialises the database
         dbm = DbManager.getInstance();
         dbm.mCtx = this;
         dbm.open();
+
+        //gets the data from MainActivity
+        Intent intent = getIntent();
+        flag = intent.getStringExtra("flag");
+        word = intent.getStringExtra("word");
+
+        //displays action bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //sets action bar title
+        getSupportActionBar().setTitle("Dictionary");
     }
 
-    //for the back button   
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
-        return true;
-    }
-
-    private void setupViewPager (ViewPager viewPager) {
+    //adds the fragments and displays their title
+    private void setupViewPager(ViewPager viewPager) {
         ViewPageAdapter adapter = new ViewPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new DictionaryTab1(), "Search by Word");
         adapter.addFragment(new DictionaryTab2(), "Search by Tag");
         viewPager.setAdapter(adapter);
     }
-
 }

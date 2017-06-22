@@ -18,10 +18,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".Dictionary"/>
-        <activity android:name=".AddWord" />
+        <activity android:name=".AddWord1" />
+        <activity android:name=".AddWord2" />
+        <activity android:name=".AddWord3" />
         <activity android:name=".WordScreen" />
         <activity android:name=".TagScreen" />
-        <activity android:name=".EditWord" />
+        <activity android:name=".EditWord"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".VideoScreen" />
     </application>
 

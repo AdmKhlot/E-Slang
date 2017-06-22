@@ -6,67 +6,87 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 
 /**
  * Created by USER on 2017-05-24.
  */
-public final class DbManager{
+public final class DbManager {
+    public static final String INDEX = "_index";
+    public static final String WORD = "word";
+    public static final String SHORT = "short";
+    public static final String LONG = "long";
+    public static final String CHARACTERISTIC = "characteristic";
+    public static final String EX = "example";
+    public static final String VIURL = "video_url";
+    public static final String COUNTRY = "country";
+    public static final String TAG = "tag";
+    public static final String _TABLENAME = "WORD";
     private final static DbManager ourInstance = new DbManager();
-    public static DbManager getInstance() {
-        return ourInstance;
-    }
-    public static final String INDEX="_index";
-    public static final String WORD="word";
-    public static final String SHORT="short";
-    public static final String LONG="long";
-    public static final String CHARACTERISTIC="characteristic";
-    public static final String EX="example";
-    public static final String VIURL="video_url";
-    public static final String COUNTRY="country";
-    public static final String TAG="tag";
-    public static final String _TABLENAME="WORD";
-
-    private DatabaseHelper mDbHelper;
-    private SQLiteDatabase mDb;
-
     private static final String DATABASE_CREATE = "create table WORD (_index integer primary key autoincrement, "
-            +"word text not null, short text not null, long text not null, characteristic text, example text, video_url text, country text not null,tag text not null);";
-    //word, short term, long term, country, tag cannot be null values
-
+            + "word text not null, short text not null, long text not null, characteristic text, example text, video_url text, country text not null,tag text not null);";
     private static final String DATABASE_NAME = "data";
     private static final int DATABASE_VERSION = 2;
     public Context mCtx = null;
-
-
-
-
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-        DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL(DATABASE_CREATE);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-           /* Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
-                    + ", which will destroy all old data");*/
-            db.execSQL("DROP TABLE IF EXISTS notes");
-            onCreate(db);
-        }
-    }
-
+    //word, short term, long term, country, tag cannot be null values
+    private DatabaseHelper mDbHelper;
+    private SQLiteDatabase mDb;
     private DbManager(Context ctx) {
         this.mCtx = ctx;
     }
 
-    private DbManager() {}
+
+    private DbManager() {
+    }
+
+    public static DbManager getInstance() {
+        return ourInstance;
+    }
+
+    public static ArrayList<String> stringToArrayList(String str) {
+        ArrayList<String> arrayList = new ArrayList<String>();
+        String[] temp = str.split(";");
+
+        for (int i = 0; i < temp.length; i++) {
+            arrayList.add(temp[i]);
+        }
+        return arrayList;
+    }
+
+    public static ArrayList<String> stringToArrayListTag(String str) {
+        ArrayList<String> arrayList = new ArrayList<String>();
+        String[] temp = str.split(";");
+
+        for (int i = 0; i < temp.length; i++) {
+            arrayList.add(temp[i]);
+        }
+        return arrayList;
+    }
+
+    public static String elaborateDesc(String str) {
+        ArrayList<String> temp = stringToArrayList(str);
+        String result = new String();
+        for (int i = 0; i < temp.size(); i++) {
+            result = result.concat(i + 1 + ". ");
+            result = result.concat(temp.get(i));
+            result = result.concat("\n\n");
+        }
+
+        return result;
+    }
+
+    public static String getTags(String str) {
+        ArrayList<String> temp = stringToArrayList(str);
+
+        String result = new String();
+        for (int i = 0; i < temp.size(); i++) {
+            result = result.concat(temp.get(i));
+        }
+        return result;
+    }
 
     public DbManager open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
@@ -79,16 +99,16 @@ public final class DbManager{
     }
 
     //insert new word
-    public long insert(String word, ArrayList<String> shortTerm, ArrayList<String> longTerm, ArrayList<String> character, ArrayList<String> example,ArrayList<String> videoUrl, String country, ArrayList<String> tag) {
+    public long insert(String word, ArrayList<String> shortTerm, ArrayList<String> longTerm, ArrayList<String> character, ArrayList<String> example, ArrayList<String> videoUrl, String country, ArrayList<String> tag) {
         ArrayList<String> wordList = new ArrayList<String>();
         wordList = getAllWords(country);
 
-        String shortT= arrayListToString(shortTerm);
-        String longT= arrayListToString(longTerm);
-        String charact= arrayListToString(character);
-        String ex= arrayListToString(example);
-        String viUrl= arrayListToString(videoUrl);
-        String tags= arrayListToString(tag);
+        String shortT = arrayListToString(shortTerm);
+        String longT = arrayListToString(longTerm);
+        String charact = arrayListToString(character);
+        String ex = arrayListToString(example);
+        String viUrl = arrayListToString(videoUrl);
+        String tags = arrayListToString(tag);
 
         int temp = 0;
         for (int i = 0; i < wordList.size(); i++) {
@@ -105,29 +125,28 @@ public final class DbManager{
             initialValues.put(COUNTRY, country);
             initialValues.put(TAG, tags);
             return mDb.insert(_TABLENAME, null, initialValues);
-        }
-        else return 0;
+        } else return 0;
     }
 
     public boolean delete(int index) {
         return mDb.delete(_TABLENAME, INDEX + "=" + index, null) > 0;
     }
 
-    public void drop(){
+    public void drop() {
         mDb.execSQL("delete from " + _TABLENAME);
     }
 
-    public void deleteWord(String word){
-        mDb.execSQL("delete from WORD where word="+"'" +word+"'"+";");
+    public void deleteWord(String word) {
+        mDb.execSQL("delete from WORD where word=" + "'" + word + "'" + ";");
     }
 
     public Cursor fetchAll() {
-        return mDb.query(_TABLENAME, new String[] { INDEX, WORD, SHORT, LONG, CHARACTERISTIC,EX,VIURL,COUNTRY,TAG }, null, null, null, null, null);
+        return mDb.query(_TABLENAME, new String[]{INDEX, WORD, SHORT, LONG, CHARACTERISTIC, EX, VIURL, COUNTRY, TAG}, null, null, null, null, null);
     }
 
     public Cursor fetch(long index) throws SQLException {
 
-        Cursor mCursor = mDb.query(true, _TABLENAME, new String[] { WORD, SHORT, LONG, CHARACTERISTIC,EX,VIURL,COUNTRY,TAG}, INDEX
+        Cursor mCursor = mDb.query(true, _TABLENAME, new String[]{WORD, SHORT, LONG, CHARACTERISTIC, EX, VIURL, COUNTRY, TAG}, INDEX
                 + "=" + index, null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -135,44 +154,56 @@ public final class DbManager{
         return mCursor;
     }
 
-    public ArrayList<String> getAllCountry(){
-        int temp=0;
-        ArrayList<String> countryList=new ArrayList<String>();
-        Cursor cursor=mDb.query(_TABLENAME, new String[] { INDEX, WORD, SHORT, LONG, CHARACTERISTIC,EX,VIURL,COUNTRY,TAG  }, null, null, null, null, null);
+    public ArrayList<String> getAllCountries() {
+        int temp = 0;
+        ArrayList<String> countryList = new ArrayList<String>();
+        Cursor cursor = mDb.query(_TABLENAME, new String[]{INDEX, WORD, SHORT, LONG, CHARACTERISTIC, EX, VIURL, COUNTRY, TAG}, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            for(int i=0;i<countryList.size();i++){
-                if(countryList.get(i).equals(cursor.getString(1))) temp++;
+            for (int i = 0; i < countryList.size(); i++) {
+                if (countryList.get(i).equals(cursor.getString(1))) temp++;
             }
-            if(temp==0) countryList.add(cursor.getString(8));
+            if (temp == 0) countryList.add(cursor.getString(8));
             cursor.moveToNext();
         }
         return countryList;
     }
 
-    public ArrayList<String> getAllWords(String country){
+    public ArrayList<String> getAllWords(String country) {
         if (country == null)
             return null;
-        ArrayList<String> wordList=new ArrayList<String>();
-        Cursor mCursor = mDb.query(_TABLENAME, new String[] { INDEX, WORD, SHORT, LONG, CHARACTERISTIC,EX,VIURL,COUNTRY,TAG }, null, null, null, null, null);
+        ArrayList<String> wordList = new ArrayList<>();
+        String query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "' ORDER BY word COLLATE NOCASE;";
+        Cursor mCursor = mDb.rawQuery(query, null);
 
         mCursor.moveToFirst();
 
-        while (!mCursor.isAfterLast()) {
-            if(country.equals(mCursor.getString(7))){
-                wordList.add(mCursor.getString(1));
-            }
-            mCursor.moveToNext();
+        if (mCursor.moveToFirst()) {
+            do {
+                if (country.equals(mCursor.getString(7))) {
+                    wordList.add(mCursor.getString(1));
+                }
+            } while (mCursor.moveToNext());
         }
         mCursor.close();
         return wordList;
     }
 
-    public Cursor getAllWords2(String country){
+    public Cursor getAllWordsCursor(String country) {
         if (country == null)
             return null;
-        ArrayList<String> wordList=new ArrayList<String>();
-        String query=new String();
+        String query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "' ORDER BY word COLLATE NOCASE;";
+        Cursor mCursor = mDb.rawQuery(query, null);
+
+        mCursor.moveToFirst();
+        return mCursor;
+    }
+
+    public Cursor getTypeData(String country) {
+        if (country == null)
+            return null;
+        ArrayList<String> wordList = new ArrayList<String>();
+        String query = new String();
         query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "' ORDER BY word COLLATE NOCASE;";
         //  Cursor mCursor = mDb.query(_TABLENAME, null, "country="+"'"+country+"'",  null, null,null,"word",null);
 
@@ -183,25 +214,11 @@ public final class DbManager{
         return mCursor;
     }
 
-    public Cursor getWordsFromTag (String country, String tag){
-        if (country == null || tag == null)
-            return null;
-        ArrayList<String> tagList=new ArrayList<String>();
-        String query=new String();
-        query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "' AND tag='" + tag + "';";
-        Cursor mCursor = mDb.rawQuery(query, null);
-        //Cursor mCursor = mDb.query(_TABLENAME, new String[] { INDEX, WORD, SHORT, LONG, CHARACTERISTIC,EX,AUURL,VIURL,COUNTRY,TAG }, null, null, null, null, null);
-
-        mCursor.moveToFirst();
-
-        return mCursor;
-    }
-
-    public Cursor getOneWord(String country, String word){ // removed String id parameter
+    public Cursor getOneWord(String country, String word) { // removed String id parameter
         if (country == null)
             return null;
-        ArrayList<String> wordList=new ArrayList<String>();
-        String query=new String();
+        ArrayList<String> wordList = new ArrayList<String>();
+        String query = new String();
         query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "' AND word='" + word + "';";
         //query = "SELECT * FROM " + _TABLENAME + " where country='" + country + "' AND word='" + word + "' AND _index='" + id + "';";
         Cursor mCursor = mDb.rawQuery(query, null);
@@ -212,146 +229,287 @@ public final class DbManager{
         return mCursor;
     }
 
-    public int getHowManyDesc(String word, int typedef){
-        int result;
-        String query=new String();
+    public int getHowManyDesc(String word, int typedef) {
+        String query = new String();
         Cursor mcursor;
-        String data=new String();
-        ArrayList<String> desc=new ArrayList<String>();
+        String data = new String();
+        ArrayList<String> desc = new ArrayList<String>();
 
-        switch(typedef){
+        switch (typedef) {
             case 1: //shortDef
-                query="SELECT * FROM WORD WHERE word='" + word + "'";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "'";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(2);
-                desc=stringToArrayList(data);
+                data = mcursor.getString(2);
+                desc = stringToArrayList(data);
                 break;
             case 2: //longDef
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(3);
-                desc=stringToArrayList(data);
+                data = mcursor.getString(3);
+                desc = stringToArrayList(data);
                 break;
             case 3: //character
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(4);
-                desc=stringToArrayList(data);
+                data = mcursor.getString(4);
+                desc = stringToArrayList(data);
                 break;
             case 4: //example
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(5);
-                desc=stringToArrayList(data);
+                data = mcursor.getString(5);
+                desc = stringToArrayList(data);
                 break;
-            case 5: //tags
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+            case 5: // videoURL
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(8);
-                desc=stringToArrayList(data);
+                data = mcursor.getString(6);
+                desc = stringToArrayList(data);
+                break;
+            case 6: //tag
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(8);
+                desc = stringToArrayListTag(data);
                 break;
         }
         return desc.size();
     }
 
-    public String getExactString(String word, int typedef, int index){
+    public String getExactString(String word, int typedef, int index) {
 
-        String query= new String();
-        String data=new String();
+        String query = new String();
+        String data = new String();
         Cursor mcursor;
-        ArrayList<String> result=new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<String>();
 
-        switch(typedef){
+        switch (typedef) {
             case 1: //shortDef
-                query="SELECT * FROM WORD where word='" + word+"';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD where word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(2);
-                result=stringToArrayList(data);
+                data = mcursor.getString(2);
+                result = stringToArrayList(data);
                 break;
             case 2: //longDef
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(3);
-                result=stringToArrayList(data);
+                data = mcursor.getString(3);
+                result = stringToArrayList(data);
                 break;
             case 3: //character
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(4);
-                result=stringToArrayList(data);
+                data = mcursor.getString(4);
+                result = stringToArrayList(data);
                 break;
             case 4: //example
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(5);
-                result=stringToArrayList(data);
+                data = mcursor.getString(5);
+                result = stringToArrayList(data);
                 break;
-            case 5:
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+            case 5: //videoURL
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(6);
-                result=stringToArrayList(data);
+                data = mcursor.getString(6);
+                result = stringToArrayList(data);
                 break;
-            case 6: //tags
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+            case 6: //tag
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(8);
-                result=stringToArrayList(data);
+                data = mcursor.getString(8);
+                result = stringToArrayListTag(data);
                 break;
         }
         return result.get(index);
     }
 
-    public void update(String word, ArrayList<String> shortTerm, ArrayList<String> longTerm, ArrayList<String> character,ArrayList<String> example,ArrayList<String> videoUrl, String country, ArrayList<String> tag){
+    public ArrayList<String> getAllType(String word, int typedef) {
 
-        String handledStr=new String();
-        String query=new String();
+        String query = new String();
+        String data = new String();
+        Cursor mcursor;
+        ArrayList<String> result = new ArrayList<String>();
 
-        if(shortTerm.size()!=0){
-            handledStr=arrayListToString(shortTerm);
-            query="UPDATE WORD SET short="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
+        switch (typedef) {
+            case 1: //shortDef
+                query = "SELECT * FROM WORD where word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(2);
+                result = stringToArrayList(data);
+                break;
+            case 2: //longDef
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(3);
+                result = stringToArrayList(data);
+                break;
+            case 3: //character
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(4);
+                result = stringToArrayList(data);
+                break;
+            case 4: //example
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(5);
+                result = stringToArrayList(data);
+                break;
+            case 5: //videoURL
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(6);
+                result = stringToArrayList(data);
+                break;
+            case 6: //tag
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(8);
+                result = stringToArrayList(data);
+                break;
+        }
+        return result;
+    }
+
+    public void update(String word, ArrayList<String> shortTerm, ArrayList<String> longTerm, ArrayList<String> character, ArrayList<String> example, ArrayList<String> videoUrl, String country, ArrayList<String> tag) {
+        String handledStr = new String();
+        String query = new String();
+        if (shortTerm.size() != 0) {
+            handledStr = arrayListToString(shortTerm);
+            query = "UPDATE WORD SET short=" + "'" + handledStr + "'" + "WHERE word=" + "'" + word + "'";
             mDb.execSQL(query);
         }
-        if(longTerm.size()!=0){
-            handledStr=arrayListToString(longTerm);
-            query="UPDATE WORD SET long="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
+        if (longTerm.size() != 0) {
+            handledStr = arrayListToString(longTerm);
+            query = "UPDATE WORD SET long=" + "'" + handledStr + "'" + "WHERE word=" + "'" + word + "'";
             mDb.execSQL(query);
         }
-        if(character.size()!=0){
-            handledStr=arrayListToString(character);
-            query="UPDATE WORD SET characteristic="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
+        if (character.size() != 0) {
+            handledStr = arrayListToString(character);
+            query = "UPDATE WORD SET characteristic=" + "'" + handledStr + "'" + "WHERE word=" + "'" + word + "'";
             mDb.execSQL(query);
         }
-        if(example.size()!=0){
-            handledStr=arrayListToString(example);
-            query="UPDATE WORD SET example="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
+        if (example.size() != 0) {
+            handledStr = arrayListToString(example);
+            query = "UPDATE WORD SET example=" + "'" + handledStr + "'" + "WHERE word=" + "'" + word + "'";
             mDb.execSQL(query);
         }
-        if(videoUrl.size()!=0){
-            handledStr=arrayListToString(videoUrl);
-            query="UPDATE WORD SET video_url="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
+        if (videoUrl.size() != 0) {
+            handledStr = arrayListToString(videoUrl);
+            query = "UPDATE WORD SET video_url=" + "'" + handledStr + "'" + "WHERE word=" + "'" + word + "'";
             mDb.execSQL(query);
         }
-        if(videoUrl.size()!=0){
-            query="UPDATE WORD SET country="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
+        if (tag.size() != 0) {
+            handledStr = arrayListToString(tag);
+            query = "UPDATE WORD SET tag=" + "'" + handledStr + "'" + "WHERE word=" + "'" + word + "'";
             mDb.execSQL(query);
         }
-        if(tag.size()!=0){
-            handledStr=arrayListToString(tag);
-            query="UPDATE WORD SET tag="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
-            mDb.execSQL(query);
+    }
+
+    public void insertDataIntoDb(String word, int typedef, String editedStr) {
+        String query = new String();
+        String data = new String();
+        Cursor mcursor;
+        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> empty = new ArrayList<String>();
+
+        Log.d(DbManager.class.getName(), "my url =" + editedStr);
+
+        switch (typedef) {
+            case 1: //shortDef
+                query = "SELECT * FROM WORD WHERE word='" + word + "'";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(2).concat(editedStr);
+                result = stringToArrayList(data);
+                break;
+            case 2: //longDef
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(3).concat(editedStr);
+                result = stringToArrayList(data);
+                break;
+            case 3: //character
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(4).concat(editedStr);
+                result = stringToArrayList(data);
+                break;
+            case 4: //example
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(5).concat(editedStr);
+                result = stringToArrayList(data);
+                break;
+            case 5: //videourl
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                data = mcursor.getString(6).concat(editedStr);
+                Log.d(DbManager.class.getName(), "my new url string =" + data);
+                result = stringToArrayList(data);
+                break;
+            case 6: //tag
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
+                mcursor.moveToFirst();
+                if (editedStr.toString().contains("#"))
+                    data = mcursor.getString(8).concat(editedStr);
+                else
+                    data = mcursor.getString(8).concat("#" + editedStr);
+                result = stringToArrayListTag(data);
+                break;
         }
+
+        switch (typedef) {
+            case 1:
+                update(word, result, empty, empty, empty, empty, null, empty);
+                break;
+            case 2:
+                update(word, empty, result, empty, empty, empty, null, empty);
+                break;
+            case 3:
+                update(word, empty, empty, result, empty, empty, null, empty);
+                break;
+            case 4:
+                update(word, empty, empty, empty, result, empty, null, empty);
+                break;
+            case 5:
+                update(word, empty, empty, empty, empty, result, null, empty);
+                break;
+            case 6:
+                update(word, empty, empty, empty, empty, empty, null, result);
+                break;
+        }
+    }
+
+    public void insertWord(String word, String newWord) {
+        String query;
+
+        query = "UPDATE WORD SET word=" + "'" + newWord + "'" + "WHERE word=" + "'" + word + "'";
+        mDb.execSQL(query);
     }
 
     public void updateExactString(String word, int typedef, int index, String editedStr) {
@@ -360,7 +518,7 @@ public final class DbManager{
         Cursor mcursor;
         ArrayList<String> result = new ArrayList<String>();
         ArrayList<String> empty = new ArrayList<String>();
-
+        ArrayList<String> temp = new ArrayList<String>();
         switch (typedef) {
             case 1: //shortDef
                 query = "SELECT * FROM WORD WHERE word='" + word + "'";
@@ -391,23 +549,36 @@ public final class DbManager{
                 result = stringToArrayList(data);
                 break;
             case 5: //videourl
-                query="SELECT * FROM WORD WHERE word='" + word + "';";
-                mcursor=mDb.rawQuery(query,null);
+                query = "SELECT * FROM WORD WHERE word='" + word + "';";
+                mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
-                data=mcursor.getString(6);
-                result=stringToArrayList(data);
+                data = mcursor.getString(6);
+                result = stringToArrayList(data);
                 break;
-            case 6: //tags
+            case 6: //tag
                 query = "SELECT * FROM WORD WHERE word='" + word + "';";
                 mcursor = mDb.rawQuery(query, null);
                 mcursor.moveToFirst();
                 data = mcursor.getString(8);
-                result = stringToArrayList(data);
+
+                result = stringToArrayListTag(data);
+
+                for (int i = 0; i < result.size(); i++)
+                    temp.add(result.get(i));
+
+                temp.remove(index);
+                temp.add(index, editedStr);
+
+                for (int i = 0; i < temp.size(); i++) {
+                    update(word, empty, empty, empty, empty, empty, null, temp);
+                }
                 break;
         }
 
-        result.remove(index);
-        result.add(index, editedStr);
+        if (typedef != 6) {
+            result.remove(index);
+            result.add(index, editedStr);
+        }
 
         switch (typedef) {
             case 1:
@@ -425,90 +596,47 @@ public final class DbManager{
             case 5:
                 update(word, empty, empty, empty, empty, result, null, empty);
                 break;
-            case 6:
-                update(word, empty, empty, empty, empty, empty, null, result);
-                break;
         }
     }
 
-    /*public void update(String word, ArrayList<String> shortDef, ArrayList<String> longDef, ArrayList<String> character,ArrayList<String> videoUrl, String flag, ArrayList<String> tag){
-
-        String handledStr=new String();
-        String query=new String();
-
-        if(shortDef.size()!=0){
-            handledStr= arrayListToString(shortDef);
-            query="UPDATE WORD SET short="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
-            mDb.execSQL(query);
-        }
-        if(longDef.size()!=0){
-            handledStr= arrayListToString(longDef);
-            query="UPDATE WORD SET long="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
-            mDb.execSQL(query);
-        }
-        if(character.size()!=0){
-            handledStr= arrayListToString(character);
-            query="UPDATE WORD SET characteristic="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
-            mDb.execSQL(query);
-        }
-        if(videoUrl.size()!=0){
-            handledStr= arrayListToString(videoUrl);
-            query="UPDATE WORD SET video_url="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
-            mDb.execSQL(query);
-        }
-            query="UPDATE WORD SET country="+"'"+flag+"'"+"WHERE word="+"'"+word+"'";
-            mDb.execSQL(query);
-
-        if(tag.size()!=0){
-            handledStr= arrayListToString(tag);
-            query="UPDATE WORD SET tag="+"'"+handledStr+"'"+"WHERE word="+"'"+word+"'";
-            mDb.execSQL(query);
-        }
-    }*/
-
     //change array list to string. string separates descriptions by ';'
-    private String arrayListToString(ArrayList<String> description){
-        String handledString=new String();
+    public String arrayListToString(ArrayList<String> description) {
+        String handledString = new String();
 
-        for(int i=0;i<description.size();i++){
-            handledString=handledString+description.get(i);
-            handledString=handledString+";";
+        for (int i = 0; i < description.size(); i++) {
+            handledString = handledString + description.get(i);
+            handledString = handledString + ";";
         }
 
         return handledString;
     }
 
-    public static ArrayList<String> stringToArrayList(String str){
-        ArrayList<String> arrayList=new ArrayList<String>();
-        String[] temp= str.split(";");
+    public String arrayListToStringTag(ArrayList<String> tag) {
+        String handledString = new String();
 
-        for(int i=0; i<temp.length;i++){
-            arrayList.add(temp[i]);
-        }
-        return arrayList;
+        for (int i = 0; i < tag.size(); i++)
+            handledString = handledString + tag.get(i);
+
+        return handledString;
     }
 
-    public static String elaborateDesc(String str){
-        ArrayList<String> temp=stringToArrayList(str);
-        String result=new String();
-        for(int i=0;i<temp.size();i++){
-            result=result.concat(i+1+". ");
-            result=result.concat(temp.get(i));
-            result=result.concat("\n\n");
+    private static class DatabaseHelper extends SQLiteOpenHelper {
+
+        DatabaseHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
-        return result;
-    }
-
-    public static String getTags(String str){
-        ArrayList<String> temp=stringToArrayList(str);
-
-        String result=new String();
-        for(int i=0;i<temp.size();i++){
-            result=result.concat(temp.get(i));
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(DATABASE_CREATE);
         }
-        return result;
-    }
 
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+           /* Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
+                    + ", which will destroy all old data");*/
+            db.execSQL("DROP TABLE IF EXISTS notes");
+            onCreate(db);
+        }
+    }
 }
-

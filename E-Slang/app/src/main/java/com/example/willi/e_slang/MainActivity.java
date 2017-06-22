@@ -1,17 +1,21 @@
 package com.example.willi.e_slang;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+
+/**
+ * MainActivity is the first screen the user sees when they open the app.
+ * It contains all the countries for the user to explore.
+ */
 
 public class MainActivity extends AppCompatActivity {
     DbManager dbm;
+
     String countryName;
+
+    //each country is assigned a code (ie. Korea = 1, England = 2)
     int countryCode;
 
     @Override
@@ -23,41 +27,27 @@ public class MainActivity extends AppCompatActivity {
         dbm.mCtx = this;
         dbm.open();
     }
-    // go to Dictionary screen
+
+    // assigns the countryCode depending on the country clicked to pass onto goToDictionary
     public void goToDictionaryKorea(View v) {
         countryCode = 1;
         countryName = getCountry(countryCode);
         goToDictionary(countryName);
     }
-
     public void goToDictionaryEngland(View v) {
         countryCode = 2;
         countryName = getCountry(countryCode);
         goToDictionary(countryName);
     }
-
     public void goToDictionaryFrance(View v) {
         countryCode = 3;
         countryName = getCountry(countryCode);
         goToDictionary(countryName);
     }
 
-    private void goToDictionary (String country) {
-        Intent myIntent = new Intent(this, Dictionary.class);
-        myIntent.putExtra("1", country);
-
-        Bundle bundle2 = new Bundle();
-        bundle2.putString("1", country);
-
-        DictionaryTab1 send2 = new DictionaryTab1();
-        send2.setArguments(bundle2);
-
-        startActivity(myIntent);
-
-    }
-
-    private String getCountry (int countryCode) {
-        switch(countryCode) {
+    //makes it neater to collate all countries and countryCodes together
+    private String getCountry(int countryCode) {
+        switch (countryCode) {
             case 1:
                 return countryName = "Korea";
             case 2:
@@ -69,12 +59,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // go to AddWord screen
-    public void goToAddWord(View v) {
-        Intent myIntent = new Intent(this, AddWord.class);
-        myIntent.putExtra("type", "add"); // string you want to pass, variable to receive
-        myIntent.putExtra("1", "a");
+    //takes the countryCode and passes it to the dictionary screen
+    private void goToDictionary(String country) {
+        Intent myIntent = new Intent(this, Dictionary.class);
+        myIntent.putExtra("flag", country);
+
+        Bundle bundle2 = new Bundle();
+        bundle2.putString("flag", country);
+
+        DictionaryTab1 send2 = new DictionaryTab1();
+        send2.setArguments(bundle2);
+
+        startActivity(myIntent);
+    }
+
+    // go to AddWord1 screen (AddWord button)
+    public void goToAddWord1(View v) {
+        Intent myIntent = new Intent(this, AddWord1.class);
         startActivity(myIntent);
     }
 }
-

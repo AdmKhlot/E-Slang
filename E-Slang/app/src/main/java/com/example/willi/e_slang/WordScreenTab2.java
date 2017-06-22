@@ -14,18 +14,23 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * Created by willi on 31/05/2017.
+ * WordScreenTab2 shows the long definition, exmple and videos
  */
 
 public class WordScreenTab2 extends Fragment {
     DbManager dbm;
+    Cursor cursor;
+
+    //store the inputs
     String word;
     String id;
     String flag;
     String exampleString;
     String videoUrlString;
-    Cursor cursor;
 
+    //button to go to VideoScreen
+    Button videoScreenButton;
+    //display the data
     TextView longDefTv;
     TextView exampleTv;
     TextView videoTv;
@@ -35,41 +40,58 @@ public class WordScreenTab2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.word_screen_tab_2, container, false);
 
+        //initialise the database
         dbm = DbManager.getInstance();
         dbm.mCtx = getContext();
         dbm.open();
 
+        //retrieve data from Dictionary or TagScreen
+        Bundle b = getActivity().getIntent().getExtras();
+        flag = b.getString("flag");
+        word = b.getString("word");
+
+        //initialise the views and button
         longDefTv = (TextView) view.findViewById(R.id.long_def);
         exampleTv = (TextView) view.findViewById(R.id.eg);
         videoTv = (TextView) view.findViewById(R.id.video_url);
+        videoScreenButton = (Button) view.findViewById(R.id.go_to_video_activity);
 
-        Bundle b = getActivity().getIntent().getExtras();
-        flag = b.getString("flag");
-        //id = b.getString("id");
-        word = b.getString("word");
-
+        //gets the respective data from the database
         cursor = dbm.getOneWord(flag, word);
-        if (cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 longDefTv.setText(DbManager.elaborateDesc(cursor.getString(cursor.getColumnIndex("long"))));
                 exampleString = DbManager.elaborateDesc(cursor.getString(cursor.getColumnIndex("example")));
-                videoUrlString = DbManager.elaborateDesc(cursor.getString(cursor.getColumnIndex("video_url")));
-            }while(cursor.moveToNext());
+                videoUrlString = DbManager.elaborateDesc(cursor.getString(cursor.getColumnIndex("video_url")).toString());
+            } while (cursor.moveToNext());
         }
-
         cursor.close();
 
-
-        if (TextUtils.isEmpty(videoUrlString))
+        //set text if there is no video found
+        //if not video is found, the button will be unclickable
+        if (TextUtils.isEmpty(videoUrlString)) {
             videoTv.setText("No videos found!");
-        else
+            videoScreenButton.setEnabled(false);
+            videoScreenButton.setText("No Videos found");
+        } else
             videoTv.setText(videoUrlString);
 
-        if (TextUtils.isEmpty(exampleString))
-            exampleTv.setText("No examples found!");
-        else
-            exampleTv.setText(exampleString);
+        //if videoScreenButton is clicked
+        videoScreenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToVideoScreen();
+            }
+        });
 
         return view;
+    }
+
+    //go to VideoScreen
+    private void goToVideoScreen() {
+        Intent myIntent = new Intent(getActivity(), VideoScreen.class);
+        myIntent.putExtra("word", word); // string you want to pass, variable to receive
+        myIntent.putExtra("flag", flag); // string you want to pass, variable to receive
+        startActivity(myIntent);
     }
 }

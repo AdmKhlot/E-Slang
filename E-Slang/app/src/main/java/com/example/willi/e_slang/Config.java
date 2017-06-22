@@ -6,9 +6,9 @@ package com.example.willi.e_slang;
 
 public final class Config {
 
-        private Config() {
-        }
+    public static final String YOUTUBE_API_KEY = "AIzaSyAbnpFL3NhxOzdqTiu696qQCT_v7680k6g";
 
-        public static final String YOUTUBE_API_KEY = "AIzaSyAbnpFL3NhxOzdqTiu696qQCT_v7680k6g";
-
+    private Config() {
     }
+
+}
